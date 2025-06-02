@@ -60,13 +60,8 @@
       border-radius: 0 10px 10px 0;
       transition: background 0.3s ease;
     }
-    button:hover:not(:disabled) {
+    button:hover {
       background: #00cccc;
-    }
-    button:disabled {
-      background: #055;
-      cursor: not-allowed;
-      color: #666;
     }
     #extraButtons {
       display: flex;
@@ -74,6 +69,11 @@
       margin-bottom: 20px;
       flex-wrap: wrap;
       justify-content: center;
+    }
+    /* Ensure buttons are always clickable and fully visible */
+    #extraButtons button {
+      pointer-events: auto;
+      opacity: 1;
     }
     #options {
       margin-bottom: 20px;
@@ -121,14 +121,14 @@
   <h1>Sigma Search Engine</h1>
 
   <form id="searchForm">
-    <input id="query" type="text" placeholder="Type your Sigma query and hit Enter..." autocomplete="on" required />
+    <input id="query" type="text" placeholder="Type your Sigma query..." autocomplete="off" required />
     <button type="submit">Search</button>
   </form>
 
   <!-- NEW BUTTONS -->
   <div id="extraButtons">
-    <button id="sigmaBtn">Sigma Search</button>
-    <button id="feelingSigmaBtn" disabled>Feeling Sigma</button>
+    <button onclick="sigmaSearch()">Sigma Search</button>
+    <button onclick="feelingSigma()">Feeling Sigma</button>
   </div>
 
   <div id="options">
@@ -149,13 +149,6 @@
     const input = document.getElementById('query');
     const resultsDiv = document.getElementById('results');
     const openInNewTab = document.getElementById('openInNewTab');
-    const sigmaBtn = document.getElementById('sigmaBtn');
-    const feelingSigmaBtn = document.getElementById('feelingSigmaBtn');
-
-    // Enable Feeling Sigma button only if input has text
-    input.addEventListener('input', () => {
-      feelingSigmaBtn.disabled = input.value.trim() === '';
-    });
 
     form.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -180,7 +173,7 @@
       } else {
         const url = `https://duckduckgo.com/?q=${encodeURIComponent(q)}`;
         if (openInNewTab.checked) {
-          window.open(url, '_blank', 'noopener');
+          window.open(url, '_blank');
         } else {
           window.location.href = url;
         }
@@ -188,7 +181,7 @@
       }
     });
 
-    sigmaBtn.addEventListener('click', () => {
+    function sigmaSearch() {
       const q = input.value.trim();
       if (!q) {
         alert("Enter a Sigma-tier query first, bruv.");
@@ -196,13 +189,13 @@
       }
       const url = `https://duckduckgo.com/?q=sigma+${encodeURIComponent(q)}`;
       if (openInNewTab.checked) {
-        window.open(url, '_blank', 'noopener');
+        window.open(url, '_blank');
       } else {
         window.location.href = url;
       }
-    });
+    }
 
-    feelingSigmaBtn.addEventListener('click', () => {
+    function feelingSigma() {
       const queries = [
         "how to dominate life like a sigma",
         "why lone wolves don't need approval",
@@ -217,11 +210,11 @@
       const r = queries[Math.floor(Math.random() * queries.length)];
       const url = `https://duckduckgo.com/?q=${encodeURIComponent(r)}`;
       if (openInNewTab.checked) {
-        window.open(url, '_blank', 'noopener');
+        window.open(url, '_blank');
       } else {
         window.location.href = url;
       }
-    });
+    }
   </script>
 </body>
 </html>
