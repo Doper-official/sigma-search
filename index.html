@@ -4,16 +4,19 @@
   <meta charset="UTF-8" />
   <title>Sigma Search Engine</title>
   <style>
-    body {
+    html, body {
+      margin: 0;
+      padding: 0;
       background: black;
       color: white;
       font-family: 'Segoe UI', sans-serif;
-      padding: 30px;
+      height: 100%;
+    }
+    body {
       display: flex;
       flex-direction: column;
-      align-items: center;
       min-height: 100vh;
-      margin: 0;
+      align-items: center;
     }
     h1 {
       font-size: 3em;
@@ -23,7 +26,7 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       animation: rainbowShift 8s ease infinite;
-      margin-bottom: 30px;
+      margin: 30px 0;
       text-align: center;
     }
     @keyframes rainbowShift {
@@ -34,7 +37,7 @@
       display: flex;
       max-width: 600px;
       width: 90%;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
     }
     input[type="text"] {
       flex: 1;
@@ -60,9 +63,15 @@
     button:hover {
       background: #00cccc;
     }
+    #options {
+      margin-bottom: 20px;
+      font-size: 1em;
+      color: #ccc;
+    }
     #results {
       max-width: 600px;
       width: 90%;
+      flex-grow: 1;
     }
     .result {
       margin: 20px 0;
@@ -83,6 +92,17 @@
       color: #ccc;
       margin-top: 5px;
     }
+    footer {
+      text-align: center;
+      font-size: 0.9em;
+      color: #aaa;
+      border-top: 1px solid #333;
+      background: #000;
+      padding: 15px 0;
+      width: 100%;
+      position: sticky;
+      bottom: 0;
+    }
   </style>
 </head>
 <body>
@@ -91,14 +111,27 @@
     <input id="query" type="text" placeholder="Type your Sigma query..." autocomplete="off" required />
     <button type="submit">Search</button>
   </form>
+
+  <div id="options">
+    <label>
+      <input type="checkbox" id="openInNewTab" checked />
+      Open in another tab
+    </label>
+  </div>
+
   <div id="results"></div>
+
+  <footer>
+    &copy; Doper 2025 – Powered by raw sigma energy 💥
+  </footer>
 
   <script>
     const form = document.getElementById('searchForm');
     const input = document.getElementById('query');
     const resultsDiv = document.getElementById('results');
+    const openInNewTab = document.getElementById('openInNewTab');
 
-    form.addEventListener('submit', async (e) => {
+    form.addEventListener('submit', (e) => {
       e.preventDefault();
       const q = input.value.trim();
       if (!q) return;
@@ -106,7 +139,6 @@
       const localKeywords = ['hi', 'hello', 'hey'];
 
       if (localKeywords.includes(q.toLowerCase())) {
-        // Show local results instantly, no API call
         resultsDiv.innerHTML = `
           <div class="result">
             <a href="https://en.wikipedia.org/wiki/Hello" target="_blank" rel="noopener noreferrer">Hello - Wikipedia</a>
@@ -120,9 +152,13 @@
           </div>
         `;
       } else {
-        // For other queries, open DuckDuckGo search page in a new tab
-        window.open(`https://duckduckgo.com/?q=${encodeURIComponent(q)}`, '_blank');
-        resultsDiv.textContent = ''; // Clear previous results if any
+        const url = `https://duckduckgo.com/?q=${encodeURIComponent(q)}`;
+        if (openInNewTab.checked) {
+          window.open(url, '_blank');
+        } else {
+          window.location.href = url;
+        }
+        resultsDiv.textContent = '';
       }
     });
   </script>
