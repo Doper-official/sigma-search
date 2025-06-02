@@ -105,28 +105,48 @@
 
       resultsDiv.textContent = 'Loading results...';
 
-      const api = `https://searx.be/search?q=${encodeURIComponent(q)}&format=json`;
+      // DuckDuckGo Instant Answer API
+      const api = `https://api.duckduckgo.com/?q=${encodeURIComponent(q)}&format=json&no_redirect=1&no_html=1`;
 
       try {
         const res = await fetch(api);
         if (!res.ok) throw new Error('Network response not ok');
         const data = await res.json();
 
-        if (!data.results || data.results.length === 0) {
-          resultsDiv.textContent = "No results found. Sigma didn't approve.";
-          return;
-        }
-
         resultsDiv.innerHTML = '';
-        data.results.forEach(result => {
+
+        // Display related topics or abstract text
+        if (data.RelatedTopics && data.RelatedTopics.length > 0) {
+          data.RelatedTopics.forEach(topic => {
+            if (topic.Text && topic.FirstURL) {
+              const div = document.createElement('div');
+              div.className = 'result';
+              div.innerHTML = `
+                <a href="${topic.FirstURL}" target="_blank" rel="noopener noreferrer">${topic.Text}</a>
+              `;
+              resultsDiv.appendChild(div);
+            } else if (topic.Topics) {
+              // Nested topics array
+              topic.Topics.forEach(subTopic => {
+                if (subTopic.Text && subTopic.FirstURL) {
+                  const div = document.createElement('div');
+                  div.className = 'result';
+                  div.innerHTML = `
+                    <a href="${subTopic.FirstURL}" target="_blank" rel="noopener noreferrer">${subTopic.Text}</a>
+                  `;
+                  resultsDiv.appendChild(div);
+                }
+              });
+            }
+          });
+        } else if (data.AbstractText) {
           const div = document.createElement('div');
           div.className = 'result';
-          div.innerHTML = `
-            <a href="${result.url}" target="_blank" rel="noopener noreferrer">${result.title}</a>
-            <p>${result.content || 'No description available.'}</p>
-          `;
+          div.innerHTML = `<p>${data.AbstractText}</p>`;
           resultsDiv.appendChild(div);
-        });
+        } else {
+          resultsDiv.textContent = "No results found. Sigma didn't approve.";
+        }
       } catch (err) {
         resultsDiv.textContent = 'Error loading results. Skibidi broke it.';
         console.error(err);
