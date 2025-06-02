@@ -63,6 +63,13 @@
     button:hover {
       background: #00cccc;
     }
+    #extraButtons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
     #options {
       margin-bottom: 20px;
       font-size: 1em;
@@ -107,10 +114,17 @@
 </head>
 <body>
   <h1>Sigma Search Engine</h1>
+
   <form id="searchForm">
     <input id="query" type="text" placeholder="Type your Sigma query..." autocomplete="off" required />
     <button type="submit">Search</button>
   </form>
+
+  <!-- NEW BUTTONS -->
+  <div id="extraButtons">
+    <button onclick="sigmaSearch()">Sigma Search</button>
+    <button onclick="feelingSigma()">Feeling Sigma</button>
+  </div>
 
   <div id="options">
     <label>
@@ -161,6 +175,42 @@
         resultsDiv.textContent = '';
       }
     });
+
+    function sigmaSearch() {
+      const q = input.value.trim();
+      if (!q) {
+        alert("Enter a Sigma-tier query first, bruv.");
+        return;
+      }
+      const url = `https://duckduckgo.com/?q=sigma+${encodeURIComponent(q)}`;
+      if (openInNewTab.checked) {
+        window.open(url, '_blank');
+      } else {
+        window.location.href = url;
+      }
+    }
+
+    function feelingSigma() {
+      const queries = [
+        "how to dominate life like a sigma",
+        "why lone wolves don't need approval",
+        "grindset mindset",
+        "NPC vs Sigma behavior",
+        "how to escape the matrix",
+        "stoicism for legends",
+        "elon musk sigma moments",
+        "how to rizz without speaking",
+        "top G quotes"
+      ];
+      const r = queries[Math.floor(Math.random() * queries.length)];
+      const url = `https://duckduckgo.com/?q=${encodeURIComponent(r)}`;
+      if (openInNewTab.checked) {
+        window.open(url, '_blank');
+      } else {
+        window.location.href = url;
+      }
+    }
   </script>
 </body>
 </html>
+
